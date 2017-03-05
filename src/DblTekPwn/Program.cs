@@ -10,7 +10,7 @@ namespace DblTekPwn
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(new DblTekPwn(args[0]).Pwn());
+            DblTekPwnConfig.Execute(new DblTekPwnArgumentParser().Parse(args));
         }
     }
 }
