@@ -71,7 +71,7 @@ USAGE: DblTekPwn.exe [MODE] [HOSTS] [OUTPUT]
 
 ### Getting a Root Shell on a Vulnerable System
 
-DblTekGoIPPwn makes it easy to simply get a root shell on any vulnerable system. Simply run the
+DblTekGoIPPwn makes it easy to get a root shell on any vulnerable system. Simply run the
 following command using the vulnerable IP.
 
 ```
@@ -84,11 +84,11 @@ Password: ***********
 
 ```
 
-From here you can simply begin entering commands (there is no shell prompt).
+From here you can begin entering commands (there is no shell prompt).
 
 ### Calculating a Challenge Response
 
-Say you simply wanted to calculate the response to a GoIP challenge ```N1746203308```. Simply
+Say you wanted to calculate the response to a GoIP challenge ```N1746203308```. You would just
 run the following command.
 
 ```
