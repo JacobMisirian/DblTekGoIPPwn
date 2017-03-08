@@ -171,3 +171,8 @@ results.txt:
 
 The ```False``` or ```True``` after the host indicates whether or not the connection was successfully
 made and the commands delivered.
+
+## DISCLAIMER
+
+I never thought I would have to write one of these BUT, I am not liable in ANY WAY for misuse or illegality derrived from
+this software. Anybody who says otherwise can contact the lawfirm of "Goatse & Goatse".
