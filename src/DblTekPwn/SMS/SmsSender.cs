@@ -10,14 +10,14 @@ namespace DblTekPwn.SMS
 {
     public class SmsSender
     {
-        public static bool SendSms(string ip, int port, string[] numbers, string content, int lineRangeLow = 1, int lineRangeHigh = 32)
+        public static bool SendSms(string ip, int port, string[] numbers, string content, int lineRangeLow = 1, int lineRangeHigh = 1)
         {
             var phone = new DblTekPwn(ip, port);
             if (!phone.TestLogin())
                 return false;
 
             content = content.Replace('\r', ' ').Replace('\n', ' ').Replace('\t', ' ');
-
+            
             List<string> commandStrings = new List<string>();
 
             foreach (string number in numbers)

