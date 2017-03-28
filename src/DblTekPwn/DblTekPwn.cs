@@ -94,7 +94,7 @@ namespace DblTekPwn
             }
         }
 
-        public bool SendCommands(params string[] commands)
+        public bool SendCommands(string[] commands, int delay = 0)
         {
             try
             {
@@ -110,6 +110,7 @@ namespace DblTekPwn
 
                 foreach (string command in commands)
                     client.Write(command);
+                Thread.Sleep(delay);
                 return true;
             }
             catch
