@@ -175,4 +175,4 @@ made and the commands delivered.
 ## DISCLAIMER
 
 I never thought I would have to write one of these BUT, I am not liable in ANY WAY for misuse or illegality derrived from
-this software. Anybody who says otherwise can contact the lawfirm of "Goatse & Goatse".
+this software. Anybody who says otherwise can contact my lawyers at http://tinyurl.com/2fcpre6
