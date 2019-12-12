@@ -213,9 +213,3 @@ string msg = "We are legion";
 int numbers = 32;
 SmsSender.SendSms(goIP, 23, nums, msg, 1, numbers);
 ```
-
-
-## DISCLAIMER
-
-I never thought I would have to write one of these BUT, I am not liable in ANY WAY for misuse or illegality derrived from
-this software. Anybody who says otherwise can contact my lawyers at http://tinyurl.com/2fcpre6
